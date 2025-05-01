@@ -11,8 +11,11 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Employees</a>
         <div class="dropdown-menu">
+        <?php  
+        if ($_SESSION["type"]==1) { ?>
           <a class="dropdown-item" href="addEmployee.php">Add Employee</a>
-          <a class="dropdown-item" href="addAdvPhone.php">Time Off</a>
+          <?php } ?>
+          <a class="dropdown-item" href="timeOff.php">Time Off</a>
           <a class="dropdown-item" href="addAdvLaptop.php">Schedule </a>
           
         </div>
