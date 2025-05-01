@@ -11,7 +11,7 @@
 </head>
 <body>
 <?php
-  include_once('menuVisitor.php');
+  include_once('menuVisitor.php'); //----
 ?>
  <div class="container">
     <div class="jumbotron jumbotron-fluid text-center">
