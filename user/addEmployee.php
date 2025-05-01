@@ -15,12 +15,13 @@ session_start();
 <body>
 <?php
   include_once('menuUser.php');
-  if(isset($_POST['registerUser'])) {
+  if(isset($_POST['addEmpl'])) {
     $fullname=$_POST['fullname'];
     $email=$_POST['email'];
     $address=$_POST['address'];
     $username=$_POST['username'];
     $pass=$_POST['pass'];
+    $type=$_POST['type'];
     if (strlen($fullname)<4 || strlen($email)<6 || strlen($address)<6 || strlen($username)<4 || strlen($pass)<4){
         echo '<script>alert("Please fill all fields!")</script>';
     }
@@ -32,13 +33,14 @@ session_start();
         $statement->execute();
         if ( $statement->rowCount() == 0){
             $sql = "insert into users (Username, password, fullname, address, email, StaffTypeId) values(";
-            $sql .= ":username, :pass, :fullname, :address, :email, 2)";
+            $sql .= ":username, :pass, :fullname, :address, :email, :type)";
             $statement = $pdo->prepare($sql);
             $statement->bindParam(':username', $username, PDO::PARAM_STR);
             $statement->bindParam(':pass', $pass, PDO::PARAM_STR);
             $statement->bindParam(':fullname', $fullname, PDO::PARAM_STR);
             $statement->bindParam(':address', $address, PDO::PARAM_STR);
             $statement->bindParam(':email', $email, PDO::PARAM_STR);
+            $statement->bindParam(':type', $type, PDO::PARAM_INT);
             $value = $statement->execute();
             if ($value){
                 echo '<script>alert("Employee added.")</script>';
@@ -77,6 +79,14 @@ session_start();
         <div class="form-group">
             <label for="pass">Password:</label>
             <input type="password" id="pass" class="form-control" name="pass" value="" ></div>
+        <div class="form-group">
+            <label for="type">Staff Type:</label>
+            <select id="type" class="form-control" name="pass">
+                <option value="3">Wait</option>
+                <option value="4">Kitchen</option>
+                <option value="5">Inventory</option>
+            </select>
+            </div>
         <div class="form-group">
             <input type="submit" value="Add" class="btn btn-primary btn-lg btn-block" name="addEmpl"></div>
     </form> 
