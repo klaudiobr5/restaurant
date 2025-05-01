@@ -79,7 +79,7 @@ session_start();
             <input type="password" id="pass" class="form-control" name="pass" value="" ></div>
         <div class="form-group">
             <input type="submit" value="Add" class="btn btn-primary btn-lg btn-block" name="addEmpl"></div>
-    </form>
+    </form> 
 </div>
 </body>
 </html>
