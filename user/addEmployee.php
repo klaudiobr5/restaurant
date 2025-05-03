@@ -26,7 +26,7 @@ session_start();
         echo '<script>alert("Please fill all fields!")</script>';
     }
     else{
-        include_once('conn/db.php'); //gia sindesi me ti basi dedomenon
+        include_once('../conn/db.php'); //gia sindesi me ti basi dedomenon
         $sql = "SELECT * FROM users where username=:username";
         $statement = $pdo->prepare($sql);
         $statement->bindParam(':username', $username, PDO::PARAM_STR);
@@ -81,7 +81,7 @@ session_start();
             <input type="password" id="pass" class="form-control" name="pass" value="" ></div>
         <div class="form-group">
             <label for="type">Staff Type:</label>
-            <select id="type" class="form-control" name="pass">
+            <select id="type" class="form-control" name="type">
                 <option value="3">Wait</option>
                 <option value="4">Kitchen</option>
                 <option value="5">Inventory</option>

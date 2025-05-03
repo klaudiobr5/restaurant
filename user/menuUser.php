@@ -16,7 +16,7 @@
           <a class="dropdown-item" href="addEmployee.php">Add Employee</a>
           <?php } ?>
           <a class="dropdown-item" href="timeOff.php">Time Off</a>
-          <a class="dropdown-item" href="addAdvLaptop.php">Schedule </a>
+          <a class="dropdown-item" href="schedule.php">Schedule </a>
           
         </div>
       </li>
