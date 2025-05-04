@@ -19,7 +19,7 @@ if(isset($_POST['submitLogin']) )   //Check if user has submitted the form
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         $_SESSION["type"] = $result["StaffTypeID"];
         $_SESSION["username"] = $username;
-        $_SESSION["onoma"] = $result["fullname"];
+        $_SESSION["onoma"] = $result["Fullname"];
         Header("Location:user/centralPage.php");
     }
 }

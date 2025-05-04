@@ -131,7 +131,7 @@ session_start();
         </tr>
         <tbody>
             <?php
-                //get all schedules
+                //get all schedules group by year, month and sum time worked
                 $sql = "select year(ScheduleDate) as ye, month(ScheduleDate) as mo, SEC_TO_TIME(sum(TIME_TO_SEC(TotalHours))) as su from schedules where Username=:username group by year(ScheduleDate), month(ScheduleDate)";
                 $statement = $pdo->prepare($sql);
                 $statement->bindParam(':username', $_SESSION["username"], PDO::PARAM_STR);

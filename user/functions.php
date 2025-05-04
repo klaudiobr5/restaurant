@@ -81,18 +81,7 @@ function addSchedule($pdo){
                         <option value="23:59:00">
                     </datalist><?php
                     echo "</td>";
-                    //echo "<select name='startTime'>";
-                    //for ($i=18; $i<24; $i++){
-                    //    echo "<option value='".$i."'>".$i."</option>";
-                    //}
-                    //echo "</select></td>";
-                    //echo "<td>";
                     echo "<td> <input id=\"endTime\" list=\"times\" type=\"time\" name=\"endTime\" value=\"18:00\" step=\"3600\">";
-                    //echo "<select name='endTime'>";
-                    //for ($i=18; $i<24; $i++){
-                    //    echo "<option value='".$i."'>".$i."</option>";
-                    //}
-                    //echo "</select></td>";
                     echo "</td>";
                     /* show one button to add schedule */
                     echo "<input type='hidden' name='id' value='".$row['Username']."'>";
@@ -106,6 +95,58 @@ function addSchedule($pdo){
         </tbody>
 		</table>
 
+<?php
+}
+
+function addReservation($pdo){
+    ?>
+    <form method='post'>
+    <table class="table table-bordered">
+        <thead>
+        <tr><th colspan="5">Reservation for <?php echo $_POST['start'];?></th></tr>
+        <tr>
+        <th>Table</th><th>Max Number of Guests</th><th>Number of Guests</th><th>Time</th><th>Reserve</th>
+        </tr>
+        <tbody>
+            <?php
+                //get all schedules for the day selected
+                $sql = "select tables.TableNumber as tbl, MaxNumberOfGuest, ReservationId  from tables left join booking on tables.TableNumber = booking.TableNumber and BookDate=:sd";
+                $statement = $pdo->prepare($sql);
+                $statement->bindParam(':sd', $_POST['start'], PDO::PARAM_STR);
+                $result = $statement->execute();
+                while ($row = $statement->fetch()) {
+                   
+                    echo "<tr><td>".$row['tbl']."</td>";
+                    echo "<td>".$row['MaxNumberOfGuest']."</td>";
+                    echo "<td><input type='number' min='1' max='".$row['MaxNumberOfGuest']."' value='".$row['MaxNumberOfGuest']."' name='nog'></td>";
+                    echo "<td> <input id=\"startTime\" list=\"times\" type=\"time\" name=\"startTime\" value=\"18:00\" step=\"3600\">";
+                    ?>
+                    <datalist id="times">
+
+                        <option value="18:00:00">
+                        <option value="19:00:00">
+                        <option value="20:00:00">
+                        <option value="21:00:00">
+                        <option value="22:00:00">
+                        <option value="23:00:00">
+                    </datalist>    
+                    <?php
+                    echo "</td>";
+                    echo "<td>";
+                    echo "<input type='hidden' name='start' value='".$_POST['start']."'>";
+                    if (!isset($row['ReservationId']))
+                        echo "<input type='checkbox' value='".$row['tbl']."' name=\"tables1[]\"></td>";
+                    else
+                        echo "<input type='checkbox' value='".$row['tbl']."' name=\"tables1[]\" disabled></td>";
+                    
+                    echo "</tr>";
+                }
+            ?>
+        </tbody>
+		</table>
+        <div class="form-group">
+        <input type="submit" value="Reserve" class='btn btn-primary btn-lg btn-block' name='addReserve'></div>
+        </form> 
 <?php
 }
     ?>

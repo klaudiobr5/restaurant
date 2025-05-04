@@ -8,24 +8,34 @@
       <li class="nav-item">
         <a class="nav-link" href="centralPage.php">Home</a>
       </li>
+      <?php  
+      if ($_SESSION["type"]!=2) { //if user is not customer?>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Employees</a>
         <div class="dropdown-menu">
         <?php  
         if ($_SESSION["type"]==1) { ?>
-          <a class="dropdown-item" href="addEmployee.php">Add Employee</a>
+            <a class="dropdown-item" href="addEmployee.php">Add Employee</a>
           <?php } ?>
-          <a class="dropdown-item" href="timeOff.php">Time Off</a>
-          <a class="dropdown-item" href="schedule.php">Schedule </a>
+          
+            <a class="dropdown-item" href="timeOff.php">Time Off</a>
+          
+            <a class="dropdown-item" href="schedule.php">Schedule </a>
           
         </div>
       </li>
-      
+      <?php } ?>  
       <li class="nav-item">
-        <a class="nav-link" href="showAll.php">Reservation</a>
+        <a class="nav-link" href="reservation.php">Reservation</a>
       </li>
-      
-      
+      <?php  
+        if ($_SESSION["type"]==3) { //Wait staff ?>
+      <li class="nav-item">
+        <a class="nav-link" href="order.php">Order</a>
+      </li>
+      <?php 
+        }
+        ?>
     </ul>
 	</div>
 

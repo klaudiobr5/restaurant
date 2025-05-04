@@ -16,43 +16,35 @@ session_start();
 <?php
   include_once('menuUser.php');
   include_once('../conn/db.php'); //gia sindesi me ti basi dedomenon
-    if(isset($_POST['addToBasket'])) {
-        $pid=$_POST['pid'];
-        if (isset($_SESSION['cart'])){
-            if (array_key_exists($pid, $_SESSION['cart'])){
-                echo '<script>alert("Υπάρχει ήδη στο καλάθι σας.")</script>';
-            }
-            else{
-                $_SESSION['cart'][$pid]=$_POST['price'];
-                echo '<script>alert("Προστέθηκε στο καλάθι σας.")</script>';
-            }
-
-        }
-        else{
-            $cart=array();
-            $cart[$pid]=$_POST['price'];
-            $_SESSION['cart']=$cart;
-            echo '<script>alert("Προστέθηκε στο καλάθι σας.")</script>';
-        }
-    }
-    else if(isset($_POST['addToWishList'])) {
-        $pid=$_POST['pid'];
-        $sql = "select * from wishlist where productId=:pid and userName=:userName";
+    if(isset($_POST['finishOrder'])) {//if kitchen staff finished preparation and pressed finish Order
+        $oid=$_POST['oid'];
+        $sql = "update orders set Status=1 where OrderID=:oid";//change status to 1 (ready to deliver by wait staff)
         $statement = $pdo->prepare($sql);
-        $statement->bindParam(':pid', $pid, PDO::PARAM_INT);
-        $statement->bindParam(':userName', $_SESSION["username"], PDO::PARAM_STR);
+        $statement->bindParam(':oid', $oid, PDO::PARAM_INT);
         $result = $statement->execute();
-        if (!$statement->fetch()){
-            $sql = "insert into wishList (productid, userName) values (:pid, :userName)";
-            $statement = $pdo->prepare($sql);
-            $statement->bindParam(':pid', $pid, PDO::PARAM_INT);
-            $statement->bindParam(':userName', $_SESSION["username"], PDO::PARAM_STR);
-            $result = $statement->execute();
-            echo '<script>alert("Προστέθηκε στο wish list σας.")</script>';
+        
+        if ($result){
+            echo '<script>alert("Έτοιμη για παράδοση.")</script>';
         }
-        else{
-            echo '<script>alert("Υπάρχει ήδη στο wish list σας.")</script>';
+        else {
+            echo '<script>alert("Πρόβλημα στην ενημέρωση της παραγγελίας.")</script>';
         }
+        
+    }
+    else if(isset($_POST['deliverOrder'])) {//if wait staff delivered order
+        $oid=$_POST['oid'];
+        $sql = "update orders set Status=2 where OrderID=:oid";//change status to 2 (delivered)
+        $statement = $pdo->prepare($sql);
+        $statement->bindParam(':oid', $oid, PDO::PARAM_INT);
+        $result = $statement->execute();
+        
+        if ($result){
+            echo '<script>alert("Delivered.")</script>';
+        }
+        else {
+            echo '<script>alert("Problem in update order.")</script>';
+        }
+        
     }
 ?>
  <div class="container">
@@ -74,46 +66,107 @@ session_start();
     </div> 
     <?php
         include_once('../conn/db.php'); //gia sindesi me ti basi dedomenon
-        
-        $sql = "select * from products where offer=1 and enabled=1 order by title";
-        $statement = $pdo->prepare($sql);
-        $result = $statement->execute();
-        ?>
-        <table class="table table-bordered">
-        <thead>
-        <tr>
-          <th colspan="6">Προσφορές</th>
-        </tr>
-        <tr>
-        <th>Τίτλος</th><th>Κονσόλα</th><th>Τιμή</th><th>Τύπος</th><th>Προβολή</th><th>Καλάθι</th>
-        </tr>
-        <tbody>
-    <?php    
-        while ($row = $statement->fetch()) {
-            echo "<tr><td>".$row['title']."</td>";
-            echo "<td>".$row['console']."</td>";
-            echo "<td>".$row['price']."</td>";
-            echo "<td>".$row['gameType']."</td>";
-            echo "<td><form method='post' action='showGame.php'>";
-            echo "<input type='hidden' name='pid' value='".$row['pId']."'>";
-            echo "<input type='submit' class='btn btn-primary' value='Προβολή'></form></td>";
-            if ($row['pieces']>0){
-                echo "<td><form method='post' action=''>";
-                echo "<input type='hidden' name='pid' value='".$row['pId']."'>";
-                echo "<input type='hidden' name='price' value='".$row['price']."'>";
-                echo "<input type='submit' value='Προσθήκη' class='btn btn-success' name='addToBasket'></form></td>";
+        if ($_SESSION["type"] == "2") { //if customer 
+            ?>
+            <table class="table table-bordered">
+            <thead>
+            <tr><th colspan="4">Reservations</th></tr>
+            <tr>
+            <th>Date</th><th>Hour</th><th>Table</th><th>Guests</th>
+            </tr>
+            <tbody>
+            <?php
+            $sql = "select * from booking where Username=:uname and BookDate>=curdate() order by BookDate";
+            $statement = $pdo->prepare($sql);
+            $statement->bindParam(':uname', $_SESSION['username'], PDO::PARAM_STR);
+            $result = $statement->execute();
+            while ($row = $statement->fetch()) {
+                echo "<tr>";
+                echo "<td>".$row['BookDate']."</td>";
+                echo "<td>".$row['BookTime']."</td>";
+                echo "<td>".$row['TableNumber']."</td>";
+                echo "<td>".$row['Guests']."</td>";
+                echo "</tr>";
             }
-            else{
-                echo "<td><form method='post' action=''>";
-                echo "<input type='hidden' name='pid' value='".$row['pId']."'>";
-                echo "<input type='hidden' name='price' value='".$row['price']."'>";
-                echo "<input type='submit' value='WishList' class='btn btn-success' name='addToWishList'></form></td>";
-            }
-            echo "</tr>";
+            ?>
+            </tbody>
+            </table>
+            <?php
         }
-    ?>
-        </tbody>
-    </table>
+        else if ($_SESSION["type"] == "3") { //if wait staff show order ready to deliver
+            ?>
+            <table class="table table-bordered">
+            <thead>
+            <tr><th colspan="4">Orders ready to Deliver</th></tr>
+            <tr>
+            <th>Table</th><th>Order Id</th><th>Details</th><th>Deliver</th>
+            </tr>
+            <tbody>
+            <?php
+            $sql = "select * from orders inner join booking on orders.reservationID=booking.reservationID and BookDate=curdate() and orders.Status=1";
+            $statement = $pdo->prepare($sql);
+            $result = $statement->execute();
+            while ($row = $statement->fetch()) {
+                echo "<tr>";
+                echo "<td>".$row['TableNumber']."</td>";
+                echo "<td>".$row['OrderID']."</td>";
+                $sql1 = "select * from orderdetails inner join items on orderdetails.itemID=items.itemID where orderId=:oid";
+                $statement1 = $pdo->prepare($sql1);
+                $statement1->bindParam(':oid', $row['OrderID'], PDO::PARAM_INT);
+                $result1 = $statement1->execute();
+                $orderDetails="";
+                while ($row1 = $statement1->fetch()) {
+                    $orderDetails .= $row1['ItemName']; 
+                    $orderDetails .= " ".$row1['Quantity']."<br>";
+                }
+                echo "<td>".$orderDetails."</td>";
+                echo "<form method='post'><td><input type='hidden' name='oid' value='".$row['OrderID']."'>";
+                echo "<input type='submit' class='btn btn-primary' value='Deliver' name='deliverOrder'></td>";
+                echo "</tr>";
+            }
+            ?>
+            </tbody>
+            </table>
+            <?php
+        }
+        else if ($_SESSION["type"] == "4") { //if kitchen staff show order to be prepared by them
+            ?>
+            <table class="table table-bordered">
+            <thead>
+            <tr><th colspan="4">Orders To Prepare</th></tr>
+            <tr>
+            <th>Table</th><th>Order Id</th><th>Details</th><th>Finish</th>
+            </tr>
+            <tbody>
+            <?php
+            $sql = "select * from orders inner join booking on orders.reservationID=booking.reservationID and BookDate=curdate() and orders.Status=0";
+            $statement = $pdo->prepare($sql);
+            $result = $statement->execute();
+            while ($row = $statement->fetch()) {
+                echo "<tr>";
+                echo "<td>".$row['TableNumber']."</td>";
+                echo "<td>".$row['OrderID']."</td>";
+                $sql1 = "select * from orderdetails inner join items on orderdetails.itemID=items.itemID where OrderID=:oid";
+                $statement1 = $pdo->prepare($sql1);
+                $statement1->bindParam(':oid', $row['OrderID'], PDO::PARAM_INT);
+                $result1 = $statement1->execute();
+                $orderDetails="";
+                while ($row1 = $statement1->fetch()) {
+                    $orderDetails .= $row1['ItemName']; 
+                    $orderDetails .= " ".$row1['Quantity']."<br>";
+                }
+                echo "<td>".$orderDetails."</td>";
+                echo "<form method='post'><td><input type='hidden' name='oid' value='".$row['OrderID']."'>";
+                echo "<input type='submit' class='btn btn-primary' value='Finish' name='finishOrder'></td>";
+                echo "</tr>";
+            }
+            ?>
+            </tbody>
+            </table>
+            <?php
+        }
+        ?>
+        
 </div> 
 </body>
 </html>
