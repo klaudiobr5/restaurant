@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION["type"])){
+  Header("Location:../login.php");
+}
 ?>
 <html>
 <head>
@@ -40,7 +43,6 @@ session_start();
     if(isset($_POST['showRes']) || isset($_POST['addReserve'])) { /*customer selected a day to show reservation
         or added a reservation */
        if (isset($_POST['addReserve'])) { //if added a schedule
-            
             $res = $_POST['tables1'];
             //insert to database
             foreach ($res as $r){ 
@@ -49,7 +51,7 @@ session_start();
                 $statement->bindParam(':uname', $_SESSION['username'], PDO::PARAM_STR);
                 $statement->bindParam(':t', $r, PDO::PARAM_INT);
                 $statement->bindParam(':bd', $_POST['start'], PDO::PARAM_STR);
-                $statement->bindParam(':bt', $_POST['startTime'], PDO::PARAM_STR);
+                $statement->bindParam(':bt', $_POST['times1'], PDO::PARAM_STR);//startTime
                 $statement->bindParam(':nog', $_POST['nog'], PDO::PARAM_INT);
                 $value = $statement->execute();
                 if ($value){

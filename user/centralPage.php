@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION["type"])){
+    Header("Location:../login.php");
+  }
 ?>
 <html>
 <head>
@@ -51,6 +54,7 @@ session_start();
     <div class="jumbotron jumbotron-fluid text-center">
         <div class="container">
             <h1 class="display-4">
+
               <?php if ($_SESSION["type"] == "1") {
                 ?>
                 Welcome Manager
@@ -165,8 +169,30 @@ session_start();
             </table>
             <?php
         }
+        else if ($_SESSION["type"] == "1" || $_SESSION["type"] == "5") { //admin or inventory for stock alert
         ?>
-        
+            <table class="table table-bordered">
+            <thead>
+            <tr><th colspan="5">Stock Alerts</th></tr>
+            <tr>
+            <th>Item</th><th>Quantity on Hand</th><th>Reorder Level</th><th>Supplier name</th><th>Supplier email</th>
+            </tr>
+            <tbody>
+            <?php
+            $sql = "select * from items where QuantityOnHand<=ReorderLevel";
+            $statement = $pdo->prepare($sql);
+            $result = $statement->execute();
+            while ($row = $statement->fetch()) {
+                echo "<tr>";
+                echo "<td>".$row['ItemName']."</td>";
+                echo "<td>".$row['QuantityOnHand']."</td>";
+                echo "<td>".$row['ReorderLevel']."</td>";
+                echo "<td>".$row['SupplierName']."</td>";
+                echo "<td>".$row['SupplierEmail']."</td>";
+                echo "</tr>";
+            }
+        }
+        ?>
 </div> 
 </body>
 </html>

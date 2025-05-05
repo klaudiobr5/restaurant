@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION["type"])){
+    Header("Location:../login.php");
+  }
 ?>
 <html>
 <head>
@@ -113,8 +116,10 @@ session_start();
         </tr>
         <tbody>
             <?php
-                //get all requests that are not accepted/rejected (0:new request, 1:reject, 2:accept)
-                $sql = "select * from timeoff inner join users on users.Username = timeoff.Username where approve=2 order by OffDateStart, OffDateEnd";
+                //get all requests that are not accepted/rejected (0:new request, 1:reject, 2:accept) and the time off is 
+                //for today or later
+                $sql = "select * from timeoff inner join users on users.Username = timeoff.Username where approve=2 ";
+                $sql .= " and (OffDateStart=curDate() or OffDateEnd>=curdate()) order by OffDateStart, OffDateEnd";
                 $statement = $pdo->prepare($sql);
                 $result = $statement->execute();
                 while ($row = $statement->fetch()) {

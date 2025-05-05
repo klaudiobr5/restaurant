@@ -11,7 +11,7 @@ function addSchedule($pdo){
         <tbody>
             <?php
                 //get all schedules for the day selected
-                $sql = "select * from schedules inner join users on users.Username = schedules.Username where scheduleDate=:sd group by StaffTypeId order by users.Username";
+                $sql = "select * from schedules inner join users on users.Username = schedules.Username where scheduleDate=:sd order by StaffTypeId, users.Username";
                 $statement = $pdo->prepare($sql);
                 $statement->bindParam(':sd', $_POST['start'], PDO::PARAM_STR);
                 $result = $statement->execute();
@@ -119,17 +119,17 @@ function addReservation($pdo){
                     echo "<tr><td>".$row['tbl']."</td>";
                     echo "<td>".$row['MaxNumberOfGuest']."</td>";
                     echo "<td><input type='number' min='1' max='".$row['MaxNumberOfGuest']."' value='".$row['MaxNumberOfGuest']."' name='nog'></td>";
-                    echo "<td> <input id=\"startTime\" list=\"times\" type=\"time\" name=\"startTime\" value=\"18:00\" step=\"3600\">";
+                    //echo "<td> <input id=\"startTime\" list=\"times\" type=\"time\" name=\"startTime\" value=\"18:00\" step=\"3600\">";
                     ?>
-                    <datalist id="times">
+                    <td><select name="times1">
 
-                        <option value="18:00:00">
-                        <option value="19:00:00">
-                        <option value="20:00:00">
-                        <option value="21:00:00">
-                        <option value="22:00:00">
-                        <option value="23:00:00">
-                    </datalist>    
+                        <option value="18:00"> 18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                        <option value="21:00">21:00</option>
+                        <option value="22:00">22:00</option>
+                        <option value="23:00">23:00</option>
+                </select>
                     <?php
                     echo "</td>";
                     echo "<td>";

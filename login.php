@@ -17,7 +17,7 @@ if(isset($_POST['submitLogin']) )   //Check if user has submitted the form
 
     if ( $statement->rowCount() >0){
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        $_SESSION["type"] = $result["StaffTypeID"];
+        $_SESSION["type"] = strval($result["StaffTypeID"]);
         $_SESSION["username"] = $username;
         $_SESSION["onoma"] = $result["Fullname"];
         Header("Location:user/centralPage.php");

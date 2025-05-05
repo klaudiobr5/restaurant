@@ -9,12 +9,12 @@
         <a class="nav-link" href="centralPage.php">Home</a>
       </li>
       <?php  
-      if ($_SESSION["type"]!=2) { //if user is not customer?>
+      if ($_SESSION["type"]!="2") { //if user is not customer?>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Employees</a>
         <div class="dropdown-menu">
         <?php  
-        if ($_SESSION["type"]==1) { ?>
+        if ($_SESSION["type"]=="1") { ?>
             <a class="dropdown-item" href="addEmployee.php">Add Employee</a>
           <?php } ?>
           
@@ -29,13 +29,35 @@
         <a class="nav-link" href="reservation.php">Reservation</a>
       </li>
       <?php  
-        if ($_SESSION["type"]==3) { //Wait staff ?>
+        if ($_SESSION["type"]=="3") { //Wait staff ?>
       <li class="nav-item">
         <a class="nav-link" href="order.php">Order</a>
       </li>
       <?php 
         }
         ?>
+        <?php  
+      if ($_SESSION["type"]=="5") { //if user inventory stuff?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="livestock.php">Live Stock</a>
+            <a class="dropdown-item" href="stockalert.php">Stock Alert</a>          
+        </div>
+      </li>
+      <?php } ?> 
+      <?php  
+      if ($_SESSION["type"]=="1") { //if user is adminr?>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reports</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="livestock.php">Live Stock</a>
+            <a class="dropdown-item" href="stockalert.php">Stock Alert</a>
+            <a class="dropdown-item" href="sales.php">Sales </a>
+          
+        </div>
+      </li>
+      <?php } ?> 
     </ul>
 	</div>
 

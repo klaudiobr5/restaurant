@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION["type"])){
+  Header("Location:../login.php");
+}
 ?>
 <html>
 <head>
@@ -184,6 +187,7 @@ session_start();
         <?php
         if (isset($_POST['addItem']) || isset($_POST['deleteItem'])){ 
          ?>
+         <!-- table to show order details -->
          <table class="table table-bordered">
             <thead>
             <tr><th colspan="3">Order Details</th></tr>
@@ -193,6 +197,7 @@ session_start();
             <tbody>
             <?php
             $lastId = $_POST['lastId'];
+            //get order details and show in table, wait stuff can delete item by item in order
             $sql = "select orderdetails.ItemID as iid, Quantity, SpecialRequests, ItemName from orderdetails inner join items on ";
             $sql .= " orderdetails.ItemID=items.ItemID where OrderId=:oid ";
             $statement = $pdo->prepare($sql);
